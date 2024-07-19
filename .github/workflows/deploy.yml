@@ -16,6 +16,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pylint
+          pip install -r requirements.txt
       - name: Pylint
         run: |
           pylint bot domain storage taskrepository main --fail-under=9
