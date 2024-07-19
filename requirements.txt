@@ -1,0 +1,8 @@
+aiogram==3.10.0
+sdamgia-api==0.1.7
+peewee==3.17.1
+psycopg2-binary==2.9.9
+requests~=2.32.3
+APScheduler~=3.10.4
+imgkit~=1.2.3
+beautifulsoup4~=4.12.3

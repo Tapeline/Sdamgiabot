@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "database"
+      POSTGRES_USER: "bot_user"
+      POSTGRES_PASSWORD: "bot_db_password"
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    networks:
+      - postgres_network
+    volumes:
+      - pgdata:/var/lib/postgresql/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bot_user -d database"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  bot:
+    build: .
+    networks:
+      - postgres_network
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      RUN_MODE: PROD
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links:
+      - postgres
+
+
+networks:
+  postgres_network:
+    driver: bridge
+
+
+volumes:
+  pgdata:
