@@ -1,5 +1,8 @@
-from domain.entities import AbstractTaskRepository, TaskID, AbstractTask, IsTaskSolved, AbstractSubject, \
-    AbstractTaskType
+"""
+Task repo impl
+"""
+
+from domain.entities import AbstractTaskRepository, TaskID, IsTaskSolved
 from taskrepository.client import GIAClient
 from taskrepository.data import Subject, Task, TaskType
 

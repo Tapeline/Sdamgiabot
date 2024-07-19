@@ -1,3 +1,7 @@
+"""
+Use cases
+"""
+
 import os
 import random
 import uuid
@@ -8,6 +12,7 @@ from domain.entities import UserId, AbstractUserRepository, AbstractTaskReposito
 
 
 class Message:
+    """Textual response (unused)"""
     def __init__(self, task: AbstractTask, text: str, image_urls: list[str]):
         self.task = task
         self.text = text
@@ -15,6 +20,7 @@ class Message:
 
 
 class ImageMessage:
+    """Response with image"""
     def __init__(self, task: AbstractTask, image: str, text: str, url: str):
         self.task = task
         self.image = image
@@ -23,6 +29,8 @@ class ImageMessage:
 
 
 class MessageImagePool:
+    # pylint: disable=missing-function-docstring
+    """Unused, subjected for removal"""
     def __init__(self, urls: list):
         self._pool_id = str(uuid.uuid4())
         self._pool_path = f"images_{self._pool_id}"
@@ -51,6 +59,7 @@ def generate_task_for_user(user_id: UserId,
                            user_repo: AbstractUserRepository,
                            task_repo: AbstractTaskRepository,
                            as_image=False) -> Message | ImageMessage | None:
+    """Generate task for given user out of given repos"""
     preferred_topics = user_repo.get_user_preferred_topics(user_id)
     if len(preferred_topics) == 0:
         return None
@@ -91,6 +100,7 @@ def generate_task_for_user(user_id: UserId,
 def check_answer_for_task(task_repo: AbstractTaskRepository,
                           subject_id: str, task_id: str,
                           answer: str) -> bool:
+    """Check whether the answer is correct"""
     subj = task_repo.get_subject(subject_id)
     task = task_repo.get_task(subj, task_id)
     return task_repo.submit_solution(task, answer)

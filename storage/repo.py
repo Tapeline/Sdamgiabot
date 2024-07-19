@@ -1,10 +1,17 @@
-from domain.entities import AbstractUserRepository, UserId, AbstractTask, TaskID, AbstractSubject, AbstractTaskType, \
-    TaskTypeID
+"""
+User repo impl
+"""
+
+from domain.entities import (AbstractUserRepository, UserId,
+                             AbstractTask, TaskID, TaskTypeID)
 from storage.models import User
 
 
 class UserRepository(AbstractUserRepository):
+    """User repo impl"""
+    # pylint: disable=missing-function-docstring
     def _ensure_user_exists(self, user_id: UserId):
+        """If user does not exist -> create"""
         if not User.select().where(User.tg_id == user_id).exists():
             user = User(tg_id=user_id, topics="", already_seen="")
             user.save()

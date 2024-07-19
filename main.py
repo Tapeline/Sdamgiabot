@@ -1,20 +1,22 @@
+# pylint: disable=missing-function-docstring
+# pylint: disable=unused-argument
+
 import asyncio
 import logging
 import os
 import sys
-from datetime import datetime
 from os import getenv
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandObject, CommandStart
-from aiogram.filters.callback_data import CallbackData
-from aiogram.types import Message, InputFile, FSInputFile, InlineKeyboardMarkup, InlineKeyboardButton, ReactionTypeEmoji
+from aiogram.types import (Message, FSInputFile, InlineKeyboardMarkup,
+                           InlineKeyboardButton, ReactionTypeEmoji)
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from bot import sched
-from domain.action import generate_task_for_user, MessageImagePool, ImageMessage, check_answer_for_task
+from domain.action import generate_task_for_user, ImageMessage, check_answer_for_task
 from storage import models
 from storage.repo import UserRepository
 from taskrepository.repo import TaskRepository
@@ -113,7 +115,7 @@ async def cmd_subscribe_unsubscribe(message: Message, command: CommandObject):
 
 
 @dp.message(Command("help"))
-async def cmd_subscribe_unsubscribe(message: Message, command: CommandObject):
+async def cmd_help(message: Message, command: CommandObject):
     await message.answer(
         "<b>❔ Помощь</b>\n\n"
         "<code>/help</code> - это меню\n\n"

@@ -1,6 +1,5 @@
-from sdamgia import SdamGIA
-
-from domain.entities import AbstractTask, AbstractSubject, TaskID, AbstractTaskType, TaskTypeID
+from domain.entities import (AbstractTask, AbstractSubject, TaskID,
+                             AbstractTaskType, TaskTypeID)
 from taskrepository.client import GIAClient
 
 

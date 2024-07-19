@@ -1,3 +1,7 @@
+"""
+Provides scheduled function
+"""
+
 import os
 
 from aiogram import Bot
@@ -10,6 +14,7 @@ from domain.entities import AbstractUserRepository, AbstractTaskRepository
 async def daily_generation(user_repo: AbstractUserRepository,
                            task_repo: AbstractTaskRepository,
                            bot: Bot):
+    """Generate daily task for all users"""
     for user_id in user_repo.get_user_ids_for_daily_task():
         response = generate_task_for_user(user_id, user_repo, task_repo, as_image=True)
 

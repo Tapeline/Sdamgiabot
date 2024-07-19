@@ -1,0 +1,38 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install pylint
+      - name: Pylint
+        run: |
+          pylint bot domain storage taskrepository main --fail-under=9
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - name: SSH Remote Action
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          password: ${{secrets.PASSWORD}}
+          script: |
+            rm -rf Sdamgiabot > /dev/null || echo > /dev/null
+            git clone https://github.com/Tapeline/Sdamgiabot.git
+            cd Sdamgiabot
+            BOT_TOKEN=${{secrets.BOT_TOKEN}} docker compose up -d --build

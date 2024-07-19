@@ -1,3 +1,7 @@
+"""
+ORM stuff
+"""
+
 import os
 
 from peewee import (Model, PostgresqlDatabase,
@@ -12,16 +16,19 @@ else:
 
 
 def init():
+    """Initialize DB"""
     db.connect()
     db.create_tables([User])
 
 
 class BaseModel(Model):
+    """ABC for models"""
     class Meta:
         database = db
 
 
 class User(BaseModel):
+    """Main user model"""
     tg_id = IntegerField()
     topics = TextField()
     already_seen = TextField()
