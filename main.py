@@ -22,6 +22,7 @@ from storage.repo import UserRepository
 from taskrepository.repo import TaskRepository
 
 TOKEN = getenv("BOT_TOKEN")
+INTERVAL = int(getenv("DAILY_INTERVAL_MINS", str(60 * 24)))
 
 dp = Dispatcher()
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -31,7 +32,7 @@ scheduler = AsyncIOScheduler(timezone="Etc/GMT+5")
 scheduler.add_job(
     sched.daily_generation,
     trigger="interval",
-    seconds=60*60*24,
+    seconds=60*INTERVAL,
     kwargs={
         "bot": bot,
         "task_repo": task_repo,
