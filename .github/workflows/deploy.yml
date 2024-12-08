@@ -32,7 +32,7 @@ jobs:
           host: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
           password: ${{secrets.PASSWORD}}
-          port: ${{secrets.PORT}}
+          port: 22001
           script: |
             rm -rf Sdamgiabot > /dev/null || echo > /dev/null
             git clone https://github.com/Tapeline/Sdamgiabot.git
