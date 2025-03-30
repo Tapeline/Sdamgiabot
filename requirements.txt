@@ -6,3 +6,6 @@ requests~=2.32.3
 APScheduler~=3.10.4
 imgkit~=1.2.3
 beautifulsoup4~=4.12.3
+
+attrs~=23.2.0
+dishka~=1.5.0
