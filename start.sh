@@ -1,1 +1,1 @@
-WKHTMLTOIMAGE_BIN=wkhtmltoimage python -m sdamgiabot.main
+WKHTMLTOIMAGE_BIN=wkhtmltoimage python3 -m sdamgiabot.main
