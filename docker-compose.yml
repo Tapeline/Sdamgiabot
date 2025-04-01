@@ -25,7 +25,7 @@ services:
     networks:
       - postgres_network
     environment:
-      BOT_TOKEN: ${BOT_TOKEN}
+      TOKEN: ${BOT_TOKEN}
       RUN_MODE: PROD
     depends_on:
       postgres:
