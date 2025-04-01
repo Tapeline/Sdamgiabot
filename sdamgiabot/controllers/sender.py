@@ -12,7 +12,9 @@ async def send_task(
         bot: Bot | None,
         user_id: int,
         image_path: str,
-        task: AbstractTask
+        task: AbstractTask,
+        *,
+        is_daily: bool
 ) -> None:
     if not bot:
         raise AssertionError("Bot not set")
@@ -32,12 +34,20 @@ async def send_task(
             ]
         ]
     )
+    if is_daily:
+        caption = (
+            f"<i>📅 Ежедневное задание</i>\n"
+            f"{task.subject.name} / Тип {task.type.name}"
+        )
+    else:
+        caption = (
+            f"{task.subject.name} / "
+            f"Тип {task.type.uid} "
+            f"({task.type.name})"
+        )
     await bot.send_photo(
         user_id,
         FSInputFile(image_path),
-        caption=(
-            f"<i>📅 Ежедневное задание</i>\n"
-            f"{task.subject.name} / Тип {task.type.name}"
-        ),
+        caption=caption,
         reply_markup=keyboard
     )

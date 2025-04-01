@@ -11,7 +11,7 @@ class Task(AbstractTask):
     def __init__(
             self, uid: TaskID,
             subject: AbstractSubject,
-            task_type: AbstractTaskType | TaskTypeID,
+            task_type: AbstractTaskType,
             task_url: str = "",
             answer: str | None = None
     ):

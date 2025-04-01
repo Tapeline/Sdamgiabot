@@ -1,5 +1,6 @@
 import random
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from typing import Optional
 
 from attr import frozen
@@ -108,22 +109,22 @@ class AbstractTaskRepository(ABC):
             self,
             subject: AbstractSubject,
             task_type: AbstractTaskType
-    ) -> list[AbstractTask]:
+    ) -> Sequence[AbstractTask]:
         """Get list of tasks"""
 
     @abstractmethod
-    def get_subjects(self) -> list[AbstractSubject]:
+    def get_subjects(self) -> Sequence[AbstractSubject]:
         """Get list of tasks"""
 
     @abstractmethod
     def get_task_types_in_subject(
-            self, subject: AbstractSubject | str
-    ) -> list[AbstractTaskType]:
+            self, subject: AbstractSubject
+    ) -> Sequence[AbstractTaskType]:
         """Get list of tasks"""
 
     @staticmethod
     def _transform_exclusion_list(
-            exclude_tasks: Optional[list[TaskID | AbstractTask]]
+            exclude_tasks: Optional[Sequence[TaskID | AbstractTask]]
     ) -> list[TaskID]:
         """Transform list of tasks or their ids to consistent list of ids"""
         return [
@@ -134,18 +135,18 @@ class AbstractTaskRepository(ABC):
     def get_tasks_excluding(
             self,
             subject: AbstractSubject, task_type: AbstractTaskType,
-            exclude_tasks: Optional[list[TaskID | AbstractTask]] = None
+            exclude_tasks: Optional[Sequence[TaskID | AbstractTask]] = None
     ) -> list[AbstractTask]:
         """Get list of tasks regarding exclusion list"""
         tasks = self.get_tasks(subject, task_type)
         exclude_tasks = self._transform_exclusion_list(exclude_tasks)
-        tasks = filter(lambda x: x not in exclude_tasks, tasks)
+        tasks = filter(lambda x: x.uid not in exclude_tasks, tasks)
         return list(tasks)
 
     def get_random_task(
             self,
             subject: AbstractSubject, task_type: AbstractTaskType,
-            exclude_tasks: Optional[list[TaskID | AbstractTask]] = None
+            exclude_tasks: Optional[Sequence[TaskID | AbstractTask]] = None
     ) -> AbstractTask | None:
         """
         Get random task of this subject regarding exclusion list.
@@ -159,7 +160,7 @@ class AbstractTaskRepository(ABC):
     @abstractmethod
     def submit_solution(
             self,
-            task: TaskID | AbstractTask,
+            task: AbstractTask,
             solution: str
     ) -> IsTaskSolved:
         """Submit solution and say whether you were right or wrong"""
@@ -173,6 +174,9 @@ type UserId = int
 class PreferredTopic:
     subject: str
     type: TaskTypeID
+
+    def __str__(self) -> str:
+        return f"{self.subject}:{self.type}"
 
 
 class AbstractUserRepository(ABC):

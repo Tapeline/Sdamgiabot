@@ -4,7 +4,7 @@ User repo impl
 
 from sdamgiabot.domain.entities import (
     AbstractUserRepository,
-    UserId,
+    PreferredTopic, UserId,
     AbstractTask,
     TaskID,
     TaskTypeID,
@@ -21,22 +21,28 @@ class UserRepository(AbstractUserRepository):
             user = User(tg_id=user_id, topics="", already_seen="")
             user.save()
 
-    def get_user_preferred_topics(self, user_id: UserId) -> list[
-        tuple[str, TaskTypeID]]:
+    def get_user_preferred_topics(
+            self, user_id: UserId
+    ) -> list[PreferredTopic]:
         self._ensure_user_exists(user_id)
         topics_str = User.get(User.tg_id == user_id).topics
         return [
-            (x[:x.find(":")], x[x.find(":") + 1:])
+            PreferredTopic(
+                x[:x.find(":")],
+                x[x.find(":") + 1:]
+            )
             for x in topics_str.split(";")
         ]
 
     def set_user_preferred_topics(
             self,
             user_id: UserId,
-            topics: list[tuple[str, TaskTypeID]]
+            topics: list[PreferredTopic]
     ) -> None:
         self._ensure_user_exists(user_id)
-        topics_str = ";".join(map(lambda x: f"{x[0]}:{x[1]}", topics))
+        topics_str = ";".join(
+            map(lambda x: f"{x.subject}:{x.type}", topics)
+        )
         user = User.get(User.tg_id == user_id)
         user.topics = topics_str
         user.save()

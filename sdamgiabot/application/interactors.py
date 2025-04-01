@@ -26,11 +26,11 @@ class GenerateTaskInteractor:
             return None
         random_topic = random.choice(preferred_topics)
         seen_tasks = self.user_repo.get_seen_tasks(user_id)
-        subject = self.task_repo.get_subject(random_topic[0])
+        subject = self.task_repo.get_subject(random_topic.subject)
         task_types = self.task_repo.get_task_types_in_subject(subject)
-        if len(task_types) < int(random_topic[1]):
+        if len(task_types) < int(random_topic.type):
             return None
-        task_type = task_types[int(random_topic[1]) - 1]
+        task_type = task_types[int(random_topic.type) - 1]
         exclude = [x[1] for x in seen_tasks if x[0] == subject.uid]
         task = self.task_repo.get_random_task(subject, task_type, exclude)
         if task is None:
@@ -56,4 +56,4 @@ class CheckAnswerInteractor:
     ) -> bool:
         subj = self.task_repo.get_subject(subject_id)
         task = self.task_repo.get_task(subj, task_id)
-        return self.task_repo.submit_solution(task, answer)
+        return self.task_repo.submit_solution(task, answer.lower())

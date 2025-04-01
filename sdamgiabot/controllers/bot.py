@@ -18,7 +18,7 @@ from sdamgiabot.domain.entities import (
     AbstractUserRepository, PreferredTopic,
 )
 from sdamgiabot.infrastructure.taskrepository.client import GIAClient
-from sdamgiabot.presentation.sender import send_task
+from sdamgiabot.controllers.sender import send_task
 
 router = Router()
 
@@ -68,13 +68,16 @@ async def cmd_gen_task(
         interactor: FromDishka[GenerateTaskInteractor],
         client: FromDishka[GIAClient]
 ) -> None:
+    await message.react([ReactionTypeEmoji(emoji="🫡")])
     task = await interactor(message.from_user.id)
     if not task:
         await message.answer("Не удалось найти задачу")
         return
     img_path = f"{uuid.uuid4()}.png"
     client.get_problem_as_image(task.subject.uid, task.uid, img_path)
-    await send_task(message.bot, message.from_user.id, img_path, task)
+    await send_task(
+        message.bot, message.from_user.id, img_path, task, is_daily=False
+    )
     os.remove(img_path)
 
 
@@ -86,7 +89,7 @@ async def cmd_get_topics(
         user_repo: FromDishka[AbstractUserRepository]
 ):
     topics = user_repo.get_user_preferred_topics(message.from_user.id)
-    topics_str = ";".join(map(lambda x: ":".join(x), topics))
+    topics_str = ";".join(map(str, topics))
     await message.answer(
         "<b>Выбранные темы:</b>\n"
         "<i>Формат: </i>\n<code>код_предмета:№_задания;"
@@ -151,8 +154,10 @@ async def cmd_help(
         "Если нужно несколько - разделить <code>;</code>. Пример: "
         "<code>inf:1;inf:2;rus:5</code>\n"
         "Доступные коды предметов: \n" +
-        ", \n".join(f"<code>{x.uid}</code> - {x.name}"
-                  for x in task_repo.get_subjects()) +
+        ", \n".join(
+            f"<code>{x.uid}</code> - {x.name}"
+            for x in task_repo.get_subjects()
+        ) +
         "\n\n"
         "<code>/gettopics</code> - получить заданные интересующие темы\n\n"
         "<code>/sub</code> - вкл./выкл. ежедневную рассылку заданий\n\n"
@@ -163,5 +168,5 @@ async def cmd_help(
 async def cmd_start(message: Message, command: CommandObject):
     await message.answer(
         "Добро пожаловать.\n"
-        "<code>/help</code> для просмотра команд"
+        "/help для просмотра команд"
     )

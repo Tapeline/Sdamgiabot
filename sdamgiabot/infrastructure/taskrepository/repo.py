@@ -1,10 +1,13 @@
 """
 Task repo impl
 """
+from collections.abc import Sequence
+
+from dishka import FromDishka
 
 from sdamgiabot.domain.entities import (
-    AbstractTaskRepository,
-    TaskID,
+    AbstractSubject, AbstractTask, AbstractTaskRepository,
+    AbstractTaskType, TaskID,
     IsTaskSolved,
 )
 from .client import GIAClient
@@ -36,8 +39,8 @@ _SUBJECTS = [
 class TaskRepository(AbstractTaskRepository):
     """Repository impl"""
 
-    def __init__(self):
-        self.client = GIAClient()
+    def __init__(self, client: FromDishka[GIAClient]):
+        self.client = client
 
     def get_client(self):
         return self.client
@@ -49,7 +52,11 @@ class TaskRepository(AbstractTaskRepository):
                 return subj
         return None
 
-    def get_tasks(self, subject: Subject, task_type: TaskType) -> list[Task]:
+    def get_tasks(
+            self,
+            subject: AbstractSubject,
+            task_type: TaskType  # type: ignore
+    ) -> Sequence[Task]:
         task_ids = []
         for cat in task_type.categories:
             task_ids.extend(
@@ -60,11 +67,12 @@ class TaskRepository(AbstractTaskRepository):
             for task_id in task_ids
         ]
 
-    def get_subjects(self) -> list[Subject]:
+    def get_subjects(self) -> Sequence[Subject]:
         return _SUBJECTS
 
-    def get_task_types_in_subject(self, subject: Subject | str) -> list[
-        TaskType]:
+    def get_task_types_in_subject(
+            self, subject: AbstractSubject
+    ) -> Sequence[TaskType]:
         topics = self.client.get_catalog(subject.uid)
         return [
             TaskType(
@@ -77,16 +85,22 @@ class TaskRepository(AbstractTaskRepository):
 
     def submit_solution(
             self,
-            task: TaskID | Task,
+            task: Task,  # type: ignore
             solution: str
     ) -> IsTaskSolved:
+        if task.answer is None:
+            return False
         solution = solution.strip().replace(" ", "")
-        answer_variants = [task.answer]
+        answer_variants: list[str] = [task.answer]
         if task.subject.uid in {"rus", "en", "de", "fr", "sp"}:
             answer_variants = task.answer.split("|")
         return solution in answer_variants
 
-    def get_task(self, subject: Subject, task_id: TaskID) -> Task | None:
+    def get_task(
+            self,
+            subject: AbstractSubject,
+            task_id: TaskID
+    ) -> Task | None:
         response = self.client.get_problem_by_id(subject.uid, task_id)
         return Task(
             response["id"],
