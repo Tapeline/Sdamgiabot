@@ -1,4 +1,5 @@
 aiogram==3.10.0
+GrabzIt==3.5.5
 sdamgia-api==0.1.7
 peewee==3.17.1
 psycopg2-binary==2.9.9
