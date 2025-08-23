@@ -9,3 +9,4 @@ beautifulsoup4~=4.12.3
 pydantic
 attrs~=23.2.0
 dishka~=1.5.0
+pillow~=11.3.0

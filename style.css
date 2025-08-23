@@ -1,13 +1,13 @@
 html {
     width: 360px!important;
     padding: 16px;
-    background-color: #333333;
+    /*background-color: #333333; */
 }
 .__problem {
     width: 360px!important;
-    background-color: #333333;
+    /*background-color: #333333;*/
 }
 .__problem * {
-    color: white;
+    /*color: white;*/
     font-size: 18px;
 }

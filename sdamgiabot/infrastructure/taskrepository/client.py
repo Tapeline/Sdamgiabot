@@ -3,6 +3,8 @@ from pathlib import Path
 
 import imgkit
 import requests
+from PIL import Image
+import PIL.ImageOps
 from dishka import FromDishka
 from sdamgia import SdamGIA
 import bs4
@@ -59,6 +61,9 @@ class GIAClient(SdamGIA):
                 "width": RENDER_PAGE_WIDTH
             }
         )
+        image = Image.open(image_path)
+        inverted_image = PIL.ImageOps.invert(image)
+        inverted_image.save(image_path)
 
     def get_problem_url(self, subject, problem_id) -> str:
         return f"{self._SUBJECT_BASE_URL[subject]}/problem?id={problem_id}"
